@@ -7,7 +7,7 @@ import { artifacts, TestLibFixedMathContract } from '../../src';
 
 import { assertRoughlyEquals, fromFixed, toDecimal, toFixed } from '../utils/number_utils';
 
-blockchainTests('LibFixedMath unit tests', env => {
+blockchainTests.only('LibFixedMath unit tests', env => {
     let testContract: TestLibFixedMathContract;
 
     before(async () => {
@@ -131,6 +131,19 @@ blockchainTests('LibFixedMath unit tests', env => {
             const tx = testContract.mulDiv.callAsync(toFixed(a), new BigNumber(n), new BigNumber(d));
             return expect(tx).to.revertWith(expectedError);
         });
+
+        it('int(-1) * int(1) / int(-1) == int(1)', async () => {
+            const [a, n, d] = [-1, 1, -1];
+            const r = await testContract.mulDiv.callAsync(new BigNumber(a), new BigNumber(n), new BigNumber(d));
+            assertFixedEquals(r, fromFixed(1));
+        });
+
+        it('-1 * int(1) / int(-1) == 1', async () => {
+            const [a, n, d] = [-1, 1, -1];
+            const r = await testContract.mulDiv.callAsync(toFixed(a), new BigNumber(n), new BigNumber(d));
+            assertFixedEquals(r, 1);
+        });
+
     });
 
     describe('add()', () => {

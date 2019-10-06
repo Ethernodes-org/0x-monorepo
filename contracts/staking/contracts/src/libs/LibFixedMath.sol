@@ -359,14 +359,14 @@ library LibFixedMath {
     /// @dev Adds two numbers, reverting on overflow.
     function _add(int256 a, int256 b) private pure returns (int256 c) {
         c = a + b;
-        if (c > 0 && a < 0 && b < 0) {
+        if (b < 0 && c >= a) {
             LibRichErrors.rrevert(LibFixedMathRichErrors.BinOpError(
                 LibFixedMathRichErrors.BinOpErrorCodes.SUBTRACTION_OVERFLOW,
                 a,
                 b
             ));
         }
-        if (c < 0 && a > 0 && b > 0) {
+        if (b > 0 && c <= a) {
             LibRichErrors.rrevert(LibFixedMathRichErrors.BinOpError(
                 LibFixedMathRichErrors.BinOpErrorCodes.ADDITION_OVERFLOW,
                 a,
